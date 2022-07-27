@@ -1,4 +1,4 @@
-#### What is this and why?
+# What is this and why?
 
 Are you using `ssh` to connect seamlessly with **Github**?
 
