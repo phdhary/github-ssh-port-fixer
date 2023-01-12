@@ -1,43 +1,43 @@
+#!/bin/bash
+
+option1="Apply Github ssh over port 443" 
+option2="Remove .ssh/config" 
+option3="Check Github ssh connection"
+
 apply_changes ()
 {
     printf '%s\n' "host github.com
   hostname ssh.github.com
-  port 443" >> $HOME/.ssh/config;
+  port 443" >> "$HOME"/.ssh/config;
 
-    printf '%s\n' "Added .ssh/config";
+  gum style --border normal --padding "0 1" 'Added .ssh/config!'
+
+  bat "$HOME"/.ssh/config
 }
 
 remove_config ()
 {
-    rm -rf $HOME/.ssh/config;
-    printf '%s\n' "Removed .ssh/config";
+    rm -rf "$HOME"/.ssh/config;
+    gum style --border normal --padding "0 1" 'Removed .ssh/config!'
 }
 
 check_github_ssh_connection ()
 {
-    ssh -T git@github.com;
+    gum spin --show-output --title="Checking ssh connection..." -- ssh -T git@github.com;
 }
 
 main ()
 {
-    while [[ true ]]; do
-        read -p "
-    ==What you wanna do?==
-1) Apply Github ssh over port 443
-2) Remove .ssh/config
-3) Check Github ssh connection
-(1/2/3): " options
-        case "$options" in
-            1) apply_changes;
-                break
+    choices=$(gum choose "$option1" "$option2" "$option3")
+
+    echo "$choices" | while read item
+    do
+        case "$item" in
+            "$option1") apply_changes;
                 ;;
-            2) remove_config;
-                break
+            "$option2") gum confirm && remove_config;
                 ;;
-            3) check_github_ssh_connection;
-                break
-                ;;
-            *) echo "Answer with number please"
+            "$option3") check_github_ssh_connection;
                 ;;
         esac
     done
